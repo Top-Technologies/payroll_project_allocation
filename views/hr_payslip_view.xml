@@ -1,16 +1,17 @@
 <odoo>
-    <record id="view_contract_form_project_allocation" model="ir.ui.view">
-        <field name="name">hr.contract.project.allocation</field>
-        <field name="model">hr.contract</field>
-        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+    <record id="view_payslip_project_allocation" model="ir.ui.view">
+        <field name="name">hr.payslip.project.allocation</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
 
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
                 <page string="Project Allocation">
-                    <field name="project_allocation_ids">
-                        <list editable="bottom">
+                    <field name="project_line_ids">
+                        <list>
                             <field name="analytic_account_id"/>
                             <field name="percentage"/>
+                            <field name="amount"/>
                         </list>
                     </field>
                 </page>

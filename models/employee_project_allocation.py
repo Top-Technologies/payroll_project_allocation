@@ -7,14 +7,18 @@ class EmployeeProjectAllocation(models.Model):
 
     contract_id = fields.Many2one('hr.contract', required=True)
 
+    employee_id = fields.Many2one(
+        'hr.employee',
+        related='contract_id.employee_id',
+        store=True,
+        readonly=True
+    )
+
+
     analytic_account_id = fields.Many2one(
         'account.analytic.account',
         string="Project",
         required=True
-    )
-    employee_id = fields.Many2one(
-        related="contract_id.employee_id",
-        store=True
     )
 
     percentage = fields.Float(required=True)
@@ -25,10 +29,6 @@ class EmployeeProjectAllocation(models.Model):
             allocations = self.search([
                 ('contract_id', '=', rec.contract_id.id)
             ])
-
             total = sum(allocations.mapped('percentage'))
-
             if total > 100:
-                raise ValidationError(
-                    "Total allocation cannot exceed 100%"
-                )
+                raise ValidationError("Total allocation cannot exceed 100%")
