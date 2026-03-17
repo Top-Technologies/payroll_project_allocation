@@ -1,21 +1,28 @@
 <odoo>
-    <record id="view_payslip_project_allocation" model="ir.ui.view">
-        <field name="name">hr.payslip.project.allocation</field>
+    <record id="view_hr_payslip_form_inherit_project" model="ir.ui.view">
+        <field name="name">hr.payslip.form.project.allocation</field>
         <field name="model">hr.payslip</field>
         <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
-
         <field name="arch" type="xml">
+
             <xpath expr="//notebook" position="inside">
                 <page string="Project Allocation">
-                    <field name="project_line_ids">
-                        <list>
-                            <field name="analytic_account_id"/>
-                            <field name="percentage"/>
-                            <field name="amount"/>
-                        </list>
-                    </field>
+                    <button name="compute_project_allocation"
+                            type="object"
+                            string="Compute Project Distribution"
+                            class="btn-primary"/>
                 </page>
+
+                <field name="project_line_ids">
+                    <list editable="bottom">
+                        <field name="analytic_account_id"/>
+                        <field name="percentage"/>
+                        <field name="amount"/>
+                    </list>
+                </field>
+
             </xpath>
+
         </field>
     </record>
 </odoo>

@@ -30,5 +30,5 @@ class EmployeeProjectAllocation(models.Model):
                 ('contract_id', '=', rec.contract_id.id)
             ])
             total = sum(allocations.mapped('percentage'))
-            if total > 100:
-                raise ValidationError("Total allocation cannot exceed 100%")
+            if total != 100:
+                raise ValidationError("Total allocation must be exactly 100%")
