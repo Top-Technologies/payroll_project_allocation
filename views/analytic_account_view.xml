@@ -1,0 +1,20 @@
+<odoo>
+    <record id="view_analytic_account_form_inherit_budget" model="ir.ui.view">
+        <field name="name">analytic.account.budget.form</field>
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet/group" position="after">
+                <group string="Budget Information">
+                    <field name="budget_amount"/>
+                    <field name="budget_currency_id"/>
+                    <field name="consumed_amount" readonly="1"/>
+                    <field name="remaining_amount" readonly="1"/>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

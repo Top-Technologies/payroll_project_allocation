@@ -12,6 +12,7 @@
         'views/contract_view.xml',
         'views/employee_project_allocation_view.xml',
         'views/hr_payslip_view.xml',
+        'views/analytic_account_view.xml',
     ],
     'installable': True,
 }
