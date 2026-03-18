@@ -3,7 +3,7 @@
     <!-- Tree View -->
     <record id="view_payslip_project_line_tree" model="ir.ui.view">
         <field name="name">payslip.project.line.tree</field>
-        <field name="model">payslip.project.line</field>
+        <field name="model">hr.payslip.project.line</field>
         <field name="arch" type="xml">
 
             <list>

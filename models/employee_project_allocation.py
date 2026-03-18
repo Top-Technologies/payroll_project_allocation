@@ -81,15 +81,15 @@ class EmployeeProjectAllocation(models.Model):
         for rec in self:
             rec.allocated_amount = (rec.wage * rec.percentage) / 100 if rec.percentage else 0
 
-    @api.constrains('percentage', 'contract_id')
-    def _check_percentage(self):
-        for rec in self:
-            allocations = self.search([
-                ('contract_id', '=', rec.contract_id.id)
-            ])
-            total = sum(allocations.mapped('percentage'))
-            if total != 100:
-                raise ValidationError("Total allocation must be exactly 100%")
+    # @api.constrains('percentage', 'contract_id')
+    # def _check_percentage(self):
+    #     for rec in self:
+    #         allocations = self.search([
+    #             ('contract_id', '=', rec.contract_id.id)
+    #         ])
+    #         total = sum(allocations.mapped('percentage'))
+    #         if total != 100:
+    #             raise ValidationError("Total allocation must be exactly 100%")
     
     @api.constrains('percentage')
     def _check_percentage_range(self):

@@ -7,19 +7,19 @@
 
             <xpath expr="//notebook" position="inside">
                 <page string="Project Allocation">
-                    <button name="compute_project_allocation"
+                    <!-- <button name="compute_project_allocation"
                             type="object"
                             string="Compute Project Distribution"
-                            class="btn-primary"/>
+                            class="btn-primary"/> -->
+                    <field name="project_line_ids">
+                        <list editable="bottom">
+                            <field name="analytic_account_id"/>
+                            <field name="percentage"/>
+                            <field name="amount"/>
+                        </list>
+                    </field>
                 </page>
 
-                <field name="project_line_ids">
-                    <list editable="bottom">
-                        <field name="analytic_account_id"/>
-                        <field name="percentage"/>
-                        <field name="amount"/>
-                    </list>
-                </field>
 
             </xpath>
 

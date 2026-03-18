@@ -35,8 +35,16 @@ class HrPayslip(models.Model):
             # ✅ VALIDATION
             total_percentage = sum(allocations.mapped('percentage'))
 
+            if not allocations:
+                raise ValidationError(
+                    f"No project allocation defined for {slip.employee_id.name}"
+                )
+
             if round(total_percentage, 2) != 100:
-                raise ValidationError("Project allocation must equal 100%")
+                raise ValidationError(
+                    f"Total allocation for {slip.employee_id.name} must be 100% "
+                    f"(current: {total_percentage}%)"
+                )
 
             currency = slip.currency_id
             rounding = currency.rounding

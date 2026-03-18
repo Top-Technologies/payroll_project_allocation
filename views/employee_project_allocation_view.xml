@@ -16,6 +16,8 @@
                 <field name="analytic_account_id"/>
                 <field name="percentage" string="Allocation (%)"/>
                 <field name="allocated_amount"/>
+                <field name="total_percentage"/>
+                <field name="allocation_status"/>
             </list>
 
         </field>
@@ -53,6 +55,8 @@
                             <field name="analytic_account_id"/>
                             <field name="percentage" string="Allocation (%)"/>
                             <field name="allocated_amount" readonly="1"/>
+                            <field name="total_percentage"/>
+                            <field name="allocation_status"/>
                         </group>
 
                     </group>
