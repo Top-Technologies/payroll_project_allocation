@@ -1,9 +1,23 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+from odoo.tools import float_compare
 
 class EmployeeProjectAllocation(models.Model):
     _name = 'employee.project.allocation'
     _description = 'Employee Project Allocation'
+
+    _sql_constraints = [
+        (
+            'check_percentage_range',
+            'CHECK(percentage >= 0 AND percentage <= 100)',
+            'Percentage must be between 0 and 100.'
+        ),
+        (
+            'unique_project_per_contract',
+            'unique(contract_id, analytic_account_id)',
+            'Each project can only be assigned once per contract.'
+        )
+    ]
 
     contract_id = fields.Many2one('hr.contract', required=True)
 
@@ -58,7 +72,7 @@ class EmployeeProjectAllocation(models.Model):
     @api.depends('total_percentage')
     def _compute_status(self):
         for rec in self:
-            if rec.total_percentage == 100:
+            if float_compare(rec.total_percentage, 100, precision_digits=2) == 0:
                 rec.allocation_status = 'ok'
             elif rec.total_percentage < 100:
                 rec.allocation_status = 'under'
@@ -69,9 +83,7 @@ class EmployeeProjectAllocation(models.Model):
     def _compute_total_percentage(self):
         for rec in self:
             if rec.contract_id:
-                allocations = self.search([
-                    ('contract_id', '=', rec.contract_id.id)
-                ])
+                allocations = rec.contract_id.project_allocation_ids
                 rec.total_percentage = sum(allocations.mapped('percentage'))
             else:
                 rec.total_percentage = 0
@@ -91,8 +103,8 @@ class EmployeeProjectAllocation(models.Model):
     #         if total != 100:
     #             raise ValidationError("Total allocation must be exactly 100%")
     
-    @api.constrains('percentage')
-    def _check_percentage_range(self):
-        for rec in self:
-            if rec.percentage < 0 or rec.percentage > 100:
-                raise ValidationError("Percentage must be between 0 and 100.")
+    # @api.constrains('percentage')
+    # def _check_percentage_range(self):
+    #     for rec in self:
+    #         if rec.percentage < 0 or rec.percentage > 100:
+    #             raise ValidationError("Percentage must be between 0 and 100.")
