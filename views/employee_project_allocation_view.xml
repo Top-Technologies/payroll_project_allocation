@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- Tree View -->
+    <!-- ========================= -->
+    <!-- TREE VIEW (Improved) -->
+    <!-- ========================= -->
     <record id="view_employee_project_allocation_tree" model="ir.ui.view">
         <field name="name">employee.project.allocation.tree</field>
         <field name="model">employee.project.allocation</field>
         <field name="arch" type="xml">
 
-            <list>
+            <list editable="bottom">
                 <field name="contract_id"/>
                 <field name="employee_id"/>
+                <field name="wage"/>
                 <field name="analytic_account_id"/>
-                <field name="percentage"/>
+                <field name="percentage" string="Allocation (%)"/>
+                <field name="allocated_amount"/>
             </list>
+
         </field>
     </record>
 
 
-    <!-- Form View -->
+    <!-- ========================= -->
+    <!-- FORM VIEW (Professional) -->
+    <!-- ========================= -->
     <record id="view_employee_project_allocation_form" model="ir.ui.view">
         <field name="name">employee.project.allocation.form</field>
         <field name="model">employee.project.allocation</field>
@@ -26,11 +33,28 @@
             <form string="Employee Project Allocation">
                 <sheet>
 
+                    <div class="oe_title">
+                        <h1>
+                            <field name="employee_id" readonly="1"/>
+                        </h1>
+                    </div>
+
                     <group>
-                        <field name="contract_id"/>
-                        <field name="employee_id"/>
-                        <field name="analytic_account_id"/>
-                        <field name="percentage"/>
+
+                        <!-- LEFT -->
+                        <group string="Employee Info">
+                            <field name="contract_id"/>
+                            <field name="employee_id" readonly="1"/>
+                            <field name="wage"/>
+                        </group>
+
+                        <!-- RIGHT -->
+                        <group string="Project Allocation">
+                            <field name="analytic_account_id"/>
+                            <field name="percentage" string="Allocation (%)"/>
+                            <field name="allocated_amount" readonly="1"/>
+                        </group>
+
                     </group>
 
                 </sheet>
@@ -40,15 +64,24 @@
     </record>
 
 
-    <!-- Action -->
+    <!-- ========================= -->
+    <!-- SEARCH VIEW (NEW 🔥) -->
+    <!-- ========================= -->
+    
+    <!-- ========================= -->
+    <!-- ACTION -->
+    <!-- ========================= -->
     <record id="action_employee_project_allocation" model="ir.actions.act_window">
         <field name="name">Employee Project Allocation</field>
         <field name="res_model">employee.project.allocation</field>
         <field name="view_mode">list,form</field>
+        <!-- <field name="search_view_id" ref="view_employee_project_allocation_search"/> -->
     </record>
 
 
-    <!-- Optional Menu (for admin debugging) -->
+    <!-- ========================= -->
+    <!-- MENU -->
+    <!-- ========================= -->
     <menuitem
         id="menu_employee_project_allocation_root"
         name="Project Payroll Allocation"

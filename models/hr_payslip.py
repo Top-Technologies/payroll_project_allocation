@@ -93,32 +93,36 @@ class HrPayslip(models.Model):
 
                 project = line.analytic_account_id
 
-                if not project.budget_currency_id:
+                # ✅ FIND ACTIVE BUDGET LINE
+                budget_line = self.env['crossovered.budget.lines'].search([
+                    ('analytic_account_id', '=', project.id),
+                    ('date_from', '<=', slip.date_to),
+                    ('date_to', '>=', slip.date_to),
+                ], limit=1)
+
+                if not budget_line:
                     raise ValidationError(
-                        f"Project {project.name} has no budget currency set."
+                        f"No budget defined for project {project.name}"
                     )
 
-                # ✅ Convert salary to project currency
+                # ✅ CONVERT salary → company currency (budget uses company currency)
                 converted_amount = slip.currency_id._convert(
                     line.amount,
-                    project.budget_currency_id,
+                    slip.company_id.currency_id,
                     slip.company_id,
                     slip.date_to
                 )
 
                 # ✅ CHECK BUDGET LIMIT
-                if project.consumed_amount + converted_amount > project.budget_amount:
+                if budget_line.practical_amount + converted_amount > budget_line.planned_amount:
                     raise ValidationError(
                         f"Budget exceeded for project {project.name}"
                     )
 
-                # ✅ UPDATE CONSUMED AMOUNT
-                project.consumed_amount += converted_amount
-
-                # ✅ Prepare analytic distribution
+                # ✅ analytic distribution
                 distribution[str(project.id)] = line.percentage / 100
 
-            # ✅ Apply analytic distribution to journal entries
+            # ✅ Apply to accounting entries
             for move_line in slip.move_id.line_ids:
                 if move_line.account_id.internal_group == 'expense':
                     move_line.analytic_distribution = distribution

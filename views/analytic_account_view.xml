@@ -9,8 +9,8 @@
 
             <xpath expr="//list" position="inside">
                 <field name="budget_amount"/>
-                <field name="consumed_amount"/>
-                <field name="remaining_amount"/>
+                <!-- <field name="consumed_amount"/>
+                <field name="remaining_amount"/> -->
                 <field name="budget_currency_id"/>
             </xpath>
 
@@ -28,8 +28,8 @@
                 <group string="Budget Information">
                     <field name="budget_amount"/>
                     <field name="budget_currency_id"/>
-                    <field name="consumed_amount" readonly="1"/>
-                    <field name="remaining_amount" readonly="1"/>
+                    <!-- <field name="consumed_amount" readonly="1"/>
+                    <field name="remaining_amount" readonly="1"/> -->
                 </group>
             </xpath>
 
