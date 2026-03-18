@@ -22,6 +22,7 @@ class AnalyticAccount(models.Model):
         compute="_compute_remaining",
         store=True
     )
+    fund_source = fields.Char(string="Fund Source")
 
     def _compute_remaining(self):
         for rec in self:
