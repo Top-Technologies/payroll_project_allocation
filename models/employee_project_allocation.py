@@ -92,6 +92,19 @@ class EmployeeProjectAllocation(models.Model):
     def _compute_allocated_amount(self):
         for rec in self:
             rec.allocated_amount = (rec.wage * rec.percentage) / 100 if rec.percentage else 0
+    
+    @api.constrains('analytic_account_id', 'contract_id')
+    def _check_unique_project(self):
+        for rec in self:
+            if not rec.contract_id or not rec.analytic_account_id:
+                continue
+
+            duplicates = rec.contract_id.project_allocation_ids.filtered(
+                lambda l: l.analytic_account_id == rec.analytic_account_id and l.id != rec.id
+            )
+
+            if duplicates:
+                raise ValidationError("This project is already assigned to this contract.")
 
     # @api.constrains('percentage', 'contract_id')
     # def _check_percentage(self):

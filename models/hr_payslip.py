@@ -1,6 +1,6 @@
 from odoo import models, fields
 from odoo.exceptions import ValidationError
-from odoo.tools import float_round
+from odoo.tools import float_round, float_compare
 
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
@@ -40,7 +40,7 @@ class HrPayslip(models.Model):
                     f"No project allocation defined for {slip.employee_id.name}"
                 )
 
-            if round(total_percentage, 2) != 100:
+            if float_compare(total_percentage, 100, precision_digits=2) != 0:
                 raise ValidationError(
                     f"Total allocation for {slip.employee_id.name} must be 100% "
                     f"(current: {total_percentage}%)"
@@ -90,49 +90,50 @@ class HrPayslip(models.Model):
         return res
 
     def action_payslip_done(self):
-
         res = super().action_payslip_done()
 
         for slip in self:
+            move = slip.move_id
 
-            distribution = {}
+            if not move or not slip.project_line_ids:
+                continue
 
-            for line in slip.project_line_ids:
+            new_lines = []
+            lines_to_remove = self.env['account.move.line']
 
-                project = line.analytic_account_id
+            for line in move.line_ids:
 
-                # ✅ FIND ACTIVE BUDGET LINE
-                budget_line = self.env['crossovered.budget.lines'].search([
-                    ('analytic_account_id', '=', project.id),
-                    ('date_from', '<=', slip.date_to),
-                    ('date_to', '>=', slip.date_to),
-                ], limit=1)
+                # ✅ Only split EXPENSE lines
+                if line.account_id.internal_group == 'expense':
 
-                if not budget_line:
-                    raise ValidationError(
-                        f"No budget defined for project {project.name}"
-                    )
+                    lines_to_remove |= line
 
-                # ✅ CONVERT salary → company currency (budget uses company currency)
-                converted_amount = slip.currency_id._convert(
-                    line.amount,
-                    slip.company_id.currency_id,
-                    slip.company_id,
-                    slip.date_to
-                )
+                    for proj in slip.project_line_ids:
 
-                # ✅ CHECK BUDGET LIMIT
-                if budget_line.practical_amount + converted_amount > budget_line.planned_amount:
-                    raise ValidationError(
-                        f"Budget exceeded for project {project.name}"
-                    )
+                        amount = (line.debit or line.credit) * (proj.percentage / 100)
 
-                # ✅ analytic distribution
-                distribution[str(project.id)] = line.percentage / 100
+                        new_lines.append((0, 0, {
+                            'name': f"{slip.employee_id.name} - {proj.analytic_account_id.name}",
+                            'partner_id': slip.employee_id.address_home_id.id,
+                            'account_id': line.account_id.id,
+                            'debit': amount if line.debit > 0 else 0.0,
+                            'credit': amount if line.credit > 0 else 0.0,
+                            'analytic_account_id': proj.analytic_account_id.id,
+                            'partner_id': line.partner_id.id,
+                        }))
 
-            # ✅ Apply to accounting entries
-            for move_line in slip.move_id.line_ids:
-                if move_line.account_id.internal_group == 'expense':
-                    move_line.analytic_distribution = distribution
+                else:
+                    # keep non-expense lines (like payable)
+                    new_lines.append((0, 0, {
+                        'name': line.name,
+                        'account_id': line.account_id.id,
+                        'debit': line.debit,
+                        'credit': line.credit,
+                        'partner_id': line.partner_id.id,
+                    }))
+
+            # ✅ Remove old lines and replace
+            move.line_ids.unlink()
+            move.write({'line_ids': new_lines})
 
         return res
