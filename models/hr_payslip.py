@@ -2,6 +2,11 @@ from odoo import models, fields
 from odoo.exceptions import ValidationError
 from odoo.tools import float_round, float_compare
 
+class HrPayslipLine(models.Model):
+    _inherit = 'hr.payslip.line'
+
+    analytic_distribution = fields.Json(string="Analytic Distribution")
+
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
 
@@ -86,54 +91,23 @@ class HrPayslip(models.Model):
 
     def compute_sheet(self):
         res = super().compute_sheet()
-        self.compute_project_allocation()
-        return res
-
-    def action_payslip_done(self):
-        res = super().action_payslip_done()
 
         for slip in self:
-            move = slip.move_id
 
-            if not move or not slip.project_line_ids:
+            slip.compute_project_allocation()
+
+            if not slip.project_line_ids:
                 continue
 
-            new_lines = []
-            lines_to_remove = self.env['account.move.line']
+            # ✅ Build analytic distribution dict
+            distribution = {}
+            for proj in slip.project_line_ids:
+                distribution[str(proj.analytic_account_id.id)] = proj.percentage / 100
 
-            for line in move.line_ids:
-
-                # ✅ Only split EXPENSE lines
-                if line.account_id.internal_group == 'expense':
-
-                    lines_to_remove |= line
-
-                    for proj in slip.project_line_ids:
-
-                        amount = (line.debit or line.credit) * (proj.percentage / 100)
-
-                        new_lines.append((0, 0, {
-                            'name': f"{slip.employee_id.name} - {proj.analytic_account_id.name}",
-                            'partner_id': slip.employee_id.address_home_id.id,
-                            'account_id': line.account_id.id,
-                            'debit': amount if line.debit > 0 else 0.0,
-                            'credit': amount if line.credit > 0 else 0.0,
-                            'analytic_account_id': proj.analytic_account_id.id,
-                            'partner_id': line.partner_id.id,
-                        }))
-
-                else:
-                    # keep non-expense lines (like payable)
-                    new_lines.append((0, 0, {
-                        'name': line.name,
-                        'account_id': line.account_id.id,
-                        'debit': line.debit,
-                        'credit': line.credit,
-                        'partner_id': line.partner_id.id,
-                    }))
-
-            # ✅ Remove old lines and replace
-            move.line_ids.unlink()
-            move.write({'line_ids': new_lines})
+            # ✅ Apply to ALL payslip lines (or filter if needed)
+            for line in slip.line_ids:
+                line.analytic_distribution = distribution
 
         return res
+
+   

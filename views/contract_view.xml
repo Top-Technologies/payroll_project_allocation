@@ -14,6 +14,30 @@
                         </list>
                     </field>
                 </page>
+                
+                <page string="Salary Adjustments">
+                    <group>
+                        <group string="DEDUCTIONS">
+                            <field name="oil_deduction"/>
+                            <field name="loan_advance_deduction"/>
+                            <field name="penalty_deduction"/>
+                            <field name="medical_insurance_deduction"/>
+                            <field name="provident_fund_deduction"/>
+                            <field name="tax_deduction"/>
+                            <field name="other_deductions"/>
+                        </group>
+                        <group string="ADDITIONS">
+                            <field name="overtime_addition"/>
+                            <field name="taxable_transport_allowance"/>
+                            <field name="position_allowance"/>
+                            <field name="house_allowance"/>
+                            <field name="non_taxable_transport_allowance"/>
+                            <field name="hardship_allowance"/>
+                            <field name="risk_allowance"/>
+                            <field name="other_allowances"/>
+                        </group>
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>

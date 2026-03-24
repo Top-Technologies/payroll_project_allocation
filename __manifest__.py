@@ -3,8 +3,9 @@
     'version': '1.0',
     'depends': [
         'hr_payroll',
+        'hr_work_entry_contract_enterprise',
         'hr',
-    'hr_contract',
+        'hr_contract',
         'project',
         'analytic',
         'account',
@@ -12,11 +13,13 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        # 'data/salary_rules.xml',
+        # 'data/salary_structure.xml',
         'views/contract_view.xml',
         'views/employee_project_allocation_view.xml',
         'views/hr_payslip_view.xml',
-        'views/analytic_account_view.xml',
         'views/hr_payslip_project_line_view.xml',
+        # 'views/analytic_account_view.xml',
     ],
     'installable': True,
 }
