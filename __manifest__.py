@@ -13,8 +13,6 @@
     ],
     'data': [
         'security/ir.model.access.csv',
-        # 'data/salary_rules.xml',
-        # 'data/salary_structure.xml',
         'views/contract_view.xml',
         'views/employee_project_allocation_view.xml',
         'views/hr_payslip_view.xml',

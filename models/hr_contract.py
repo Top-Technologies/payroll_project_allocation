@@ -19,6 +19,10 @@ class HrContract(models.Model):
     tax_deduction = fields.Monetary(string="Tax Deduction")
     other_deductions = fields.Monetary(string="Other Deductions")
     
+    # PERCENTAGE-BASED DEDUCTIONS
+    medical_insurance_percentage = fields.Float(string="Medical Insurance %", help="Percentage of basic wage for medical insurance")
+    provident_fund_percentage = fields.Float(string="Provident Fund %", help="Percentage of basic wage for provident fund")
+    
     # ADDITIONS
     overtime_addition = fields.Monetary(string="Overtime Addition")
     taxable_transport_allowance = fields.Monetary(string="Taxable Transport Allowance")

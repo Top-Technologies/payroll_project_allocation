@@ -26,6 +26,10 @@
                             <field name="tax_deduction"/>
                             <field name="other_deductions"/>
                         </group>
+                        <group string="PERCENTAGE-BASED DEDUCTIONS">
+                            <field name="medical_insurance_percentage"/>
+                            <field name="provident_fund_percentage"/>
+                        </group>
                         <group string="ADDITIONS">
                             <field name="overtime_addition"/>
                             <field name="taxable_transport_allowance"/>
