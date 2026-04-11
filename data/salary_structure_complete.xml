@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Complete Salary Structure with Additions and Deductions -->
+        <record id="hr_salary_structure_complete" model="hr.payroll.structure">
+            <field name="name">Complete Salary Structure with Adjustments</field>
+            <field name="code">COMPLETE_PAYROLL</field>
+            <field name="company_id" eval="False"/>
+            <field name="parent_id" ref="hr_payroll.structure_base"/>
+            <field name="rule_ids" eval="[
+                # Basic Salary
+                ref('hr_rule_basic_salary'),
+                
+                # Additions (45-75)
+                ref('hr_rule_overtime_addition'),
+                ref('hr_rule_taxable_transport_allowance'),
+                ref('hr_rule_position_allowance'),
+                ref('hr_rule_house_allowance'),
+                ref('hr_rule_non_taxable_transport_allowance'),
+                ref('hr_rule_hardship_allowance'),
+                ref('hr_rule_risk_allowance'),
+                ref('hr_rule_other_allowances'),
+                
+                # Gross Salary Calculation
+                ref('hr_rule_gross_salary'),
+                
+                # Deductions (105-125)
+                ref('hr_rule_oil_deduction'),
+                ref('hr_rule_loan_advance_deduction'),
+                ref('hr_rule_penalty_deduction'),
+                ref('hr_rule_medical_insurance_deduction'),
+                ref('hr_rule_provident_fund_deduction'),
+                ref('hr_rule_tax_deduction'),
+                ref('hr_rule_other_deductions'),
+                
+                # Net Salary Calculation
+                ref('hr_rule_net_salary'),
+            ]"/>
+        </record>
+        
+        <!-- Alternative Structure - Only Additions (No Deductions) -->
+        <record id="hr_salary_structure_additions_only" model="hr.payroll.structure">
+            <field name="name">Salary Structure - Additions Only</field>
+            <field name="code">ADDITIONS_ONLY</field>
+            <field name="company_id" eval="False"/>
+            <field name="parent_id" ref="hr_payroll.structure_base"/>
+            <field name="rule_ids" eval="[
+                # Basic Salary
+                ref('hr_rule_basic_salary'),
+                
+                # Additions only
+                ref('hr_rule_overtime_addition'),
+                ref('hr_rule_taxable_transport_allowance'),
+                ref('hr_rule_position_allowance'),
+                ref('hr_rule_house_allowance'),
+                ref('hr_rule_non_taxable_transport_allowance'),
+                ref('hr_rule_hardship_allowance'),
+                ref('hr_rule_risk_allowance'),
+                ref('hr_rule_other_allowances'),
+                
+                # Gross Salary Calculation
+                ref('hr_rule_gross_salary'),
+                
+                # Net Salary Calculation (no deductions)
+                ref('hr_rule_net_salary'),
+            ]"/>
+        </record>
+        
+        <!-- Basic Structure - Essential Fields Only -->
+        <record id="hr_salary_structure_basic" model="hr.payroll.structure">
+            <field name="name">Basic Salary Structure</field>
+            <field name="code">BASIC_PAYROLL</field>
+            <field name="company_id" eval="False"/>
+            <field name="parent_id" ref="hr_payroll.structure_base"/>
+            <field name="rule_ids" eval="[
+                # Basic Salary
+                ref('hr_rule_basic_salary'),
+                
+                # Essential Additions
+                ref('hr_rule_overtime_addition'),
+                ref('hr_rule_position_allowance'),
+                ref('hr_rule_house_allowance'),
+                
+                # Gross Salary Calculation
+                ref('hr_rule_gross_salary'),
+                
+                # Essential Deductions
+                ref('hr_rule_oil_deduction'),
+                ref('hr_rule_loan_advance_deduction'),
+                
+                # Net Salary Calculation
+                ref('hr_rule_net_salary'),
+            ]"/>
+        </record>
+        
+    </data>
+</odoo>
